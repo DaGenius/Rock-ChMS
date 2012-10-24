@@ -3,7 +3,7 @@
 <div class="span8 person-notes-container">
     <section id="person-notes" class="person-notes scroll-container">
         <header class="group">
-            <h4>Timeline</h4>
+            <h4><asp:Literal ID="lTitle" runat="server"></asp:Literal></h4>
             <a id="note-add" class="note-add btn"><i class="icon-plus"></i></a>
 
             <script>
@@ -53,84 +53,9 @@
             </div>
             <div class="viewport">
                 <div class="note-container-top"></div>
-                <div class="note-container overview">
-                    <article class="group alert">
-                        <i class="icon-comment"></i>
-                        <div class="details">
-                            <h5>7/14/2012 - Bob Johnson</h5>
-                            Talk to security before allowing to serve in any ministry area.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-calendar"></i>
-                        <div class="details">
-                            <h5>8/1/2012 - Event Registration</h5>
-                            Register for Feed My Staving Puppies (Jon, Heidi, Alex and Adam)
-                        </div>
-                    </article>
-                    <article class="group personal">
-                        <i class="icon-comment"></i>
-                        <div class="details">
-                            <h5>7/14/2012 - Mike McClain</h5>
-                            Had Lunch with Jon today to talk about using new neighborhood map.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-envelope"></i>
-                        <div class="details">
-                            <h5>7/7/2012 - Email from: Dustin Tappan</h5>
-                            An email was sent to Jon from Dustin Tappan on 10/31 @9:35am.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-phone"></i>
-                        <div class="details">
-                            <h5>7/1/2012 - Call To Scott Merlin</h5>
-                            Jon called Scott Merlin's phone, 2999, on Monday October 12th at 10:51am and talked for 10mins.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-comment"></i>
-                        <div class="details">
-                            <h5>7/1/2012 - Bob Johnson</h5>
-                            Talked to Jon about joining the Security Team and gave him the forms needed to apply.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-calendar"></i>
-                        <div class="details">
-                            <h5>8/1/2012 - Event Registration</h5>
-                            Register for Feed My Staving Puppies (Jon, Heidi, Alex and Adam)
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-comment"></i>
-                        <div class="details">
-                            <h5>7/14/2012 - Mike McClain</h5>
-                            Had Lunch with Jon today to talk about using new neighborhood map.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-envelope"></i>
-                        <div class="details">
-                            <h5>7/7/2012 - Email from: Dustin Tappan</h5>
-                            An email was sent to Jon from Dustin Tappan on 10/31 @9:35am.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-phone"></i>
-                        <div class="details">
-                            <h5>7/1/2012 - Call To Scott Merlin</h5>
-                            Jon called Scott Merlin's phone, 2999, on Monday October 12th at 10:51am and talked for 10mins.
-                        </div>
-                    </article>
-                    <article class="group">
-                        <i class="icon-comment"></i>
-                        <div class="details">
-                            <h5>7/1/2012 - Bob Johnson</h5>
-                            Talked to Jon about joining the Security Team and gave him the forms needed to apply.
-                        </div>
-                    </article>
+                <div class="note-container overview" >
+                    <asp:PlaceHolder ID="phNotes" runat="server"></asp:PlaceHolder>
+                    <asp:Xml ID="xmlNotes" runat="server"></asp:Xml>
                 </div>
                 <div class="note-container-bottom"></div>
             </div>

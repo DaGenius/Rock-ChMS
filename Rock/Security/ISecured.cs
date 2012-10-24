@@ -49,12 +49,29 @@ namespace Rock.Security
         bool IsAuthorized( string action, Rock.Crm.Person person );
 
         /// <summary>
+        /// Determines whether the specified action is private (Only the current user has access).
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="person">The person.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified action is private; otherwise, <c>false</c>.
+        /// </returns>
+        bool IsPrivate( string action, Rock.Crm.Person person );
+
+        /// <summary>
+        /// Makes the action on the current entity private (Only the current user will have access).
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="person">The person.</param>
+        /// <param name="personId">The current person id.</param>
+        void MakePrivate( string action, Rock.Crm.Person person, int? personId );
+
+        /// <summary>
         /// If a user or role is not specifically allowed or denied to perform the selected action,
         /// return <c>true</c> if they should be allowed anyway or <c>false</c> if not.
         /// </summary>
         /// <param name="action">The action.</param>
         /// <returns></returns>
-
         bool IsAllowedByDefault( string action );
 
         /// <summary>

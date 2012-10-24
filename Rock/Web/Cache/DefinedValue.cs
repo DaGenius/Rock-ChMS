@@ -5,6 +5,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.Caching;
 
 namespace Rock.Web.Cache
@@ -14,7 +15,7 @@ namespace Rock.Web.Cache
     /// This information will be cached by the engine
     /// </summary>
     [Serializable]
-    public class DefinedValueCache : Rock.Core.DefinedValueDto
+    public class DefinedValueCache : Rock.Core.DefinedValueDto, Rock.Attribute.IHasAttributes
     {
         private DefinedValueCache() : base() { }
         private DefinedValueCache( Rock.Core.DefinedValue model ) : base( model ) { }
@@ -29,6 +30,66 @@ namespace Rock.Web.Cache
         {
             get { return DefinedTypeCache.Read( DefinedTypeId ); }
         }
+
+        /// <summary>
+        /// Dictionary of categorized attributes.  Key is the category name, and Value is list of attributes in the category
+        /// </summary>
+        /// <value>
+        /// The attribute categories.
+        /// </value>
+        public SortedDictionary<string, List<string>> AttributeCategories
+        {
+            get
+            {
+                var attributeCategories = new SortedDictionary<string, List<string>>();
+
+                foreach ( int id in AttributeIds )
+                {
+                    var attribute = AttributeCache.Read( id );
+                    if ( !attributeCategories.ContainsKey( attribute.Key ) )
+                        attributeCategories.Add( attribute.Category, new List<string>() );
+                    attributeCategories[attribute.Category].Add( attribute.Key );
+                }
+
+                return attributeCategories;
+            }
+
+            set { }
+        }
+
+        /// <summary>
+        /// List of attributes associated with the page.  This object will not include values.
+        /// To get values associated with the current page instance, use the AttributeValues
+        /// </summary>
+        public Dictionary<string, Rock.Web.Cache.AttributeCache> Attributes
+        {
+            get
+            {
+                var attributes = new Dictionary<string, Rock.Web.Cache.AttributeCache>();
+
+                foreach ( int id in AttributeIds )
+                {
+                    Rock.Web.Cache.AttributeCache attribute = AttributeCache.Read( id );
+                    attributes.Add( attribute.Key, attribute );
+                }
+
+                return attributes;
+            }
+
+            set
+            {
+                this.AttributeIds = new List<int>();
+                foreach ( var attribute in value )
+                    this.AttributeIds.Add( attribute.Value.Id );
+            }
+        }
+
+        private List<int> AttributeIds = new List<int>();
+
+        /// <summary>
+        /// Dictionary of all attributes and their value.
+        /// </summary>
+        public Dictionary<string, List<Rock.Core.AttributeValueDto>> AttributeValues { get; set; }
 
         #region Static Methods
 
@@ -58,6 +119,8 @@ namespace Rock.Web.Cache
                 Rock.Core.DefinedValue definedValueModel = definedValueService.Get( id );
                 if ( definedValueModel != null )
                 {
+                    Rock.Attribute.Helper.LoadAttributes( definedValueModel );
+
                     definedValue = CopyModel( definedValueModel );
 
                     cache.Set( cacheKey, definedValue, new CacheItemPolicy() );
@@ -100,6 +163,18 @@ namespace Rock.Web.Cache
         public static DefinedValueCache CopyModel( Rock.Core.DefinedValue definedValueModel )
         {
             DefinedValueCache definedValue = new DefinedValueCache( definedValueModel );
+
+            definedValue.AttributeValues = definedValueModel.AttributeValues;
+            definedValue.AttributeIds = new List<int>();
+
+            if ( definedValueModel.Attributes != null )
+            {
+                foreach ( var attribute in definedValueModel.Attributes )
+                {
+                    definedValue.AttributeIds.Add( attribute.Value.Id );
+                }
+            }
+
             return definedValue;
         }
 

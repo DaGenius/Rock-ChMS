@@ -514,6 +514,10 @@
     <Compile Include="Migrations\201210191237338_DotLiquid.Designer.cs">
       <DependentUpon>201210191237338_DotLiquid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201210221841121_Notes.cs" />
+    <Compile Include="Migrations\201210221841121_Notes.Designer.cs">
+      <DependentUpon>201210221841121_Notes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\RockCSharpMigrationCodeGenerator.cs" />
     <Compile Include="Migrations\RockMigration.cs" />
@@ -908,6 +912,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201210191237338_DotLiquid.resx">
       <DependentUpon>201210191237338_DotLiquid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201210221841121_Notes.resx">
+      <DependentUpon>201210221841121_Notes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

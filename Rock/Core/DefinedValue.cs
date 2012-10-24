@@ -124,7 +124,7 @@ namespace Rock.Core
         /// </summary>
         public DefinedValueConfiguration()
         {
-            this.HasRequired( p => p.DefinedType ).WithMany( p => p.DefinedValues ).HasForeignKey( p => p.DefinedTypeId ).WillCascadeOnDelete(false);
+            this.HasRequired( p => p.DefinedType ).WithMany( p => p.DefinedValues ).HasForeignKey( p => p.DefinedTypeId ).WillCascadeOnDelete( true );
         }
     }
 }

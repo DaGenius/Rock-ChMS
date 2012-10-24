@@ -73,7 +73,7 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                     new XAttribute( "name", group.Name ),
                     new XAttribute( "role", group.Role ),
                     new XAttribute( "type", group.Type ),
-                    new XAttribute( "class-name", group.Type.ToLower().Replace(' ', '-') )
+                    new XAttribute( "class-name", group.Type.ToLower().Replace( ' ', '-' ) )
                     );
                 groupsElement.Add( groupElement );
 
@@ -81,16 +81,16 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                 groupElement.Add( membersElement );
 
                 bool includeSelf = false;
-                if (!Boolean.TryParse(AttributeValue("IncludeSelf"), out includeSelf))
+                if ( !Boolean.TryParse( AttributeValue( "IncludeSelf" ), out includeSelf ) )
                 {
                     includeSelf = false;
                 }
 
                 int groupId = group.Id;
                 foreach ( dynamic member in memberService.Queryable()
-                    .Where( m => 
-                        m.GroupId == groupId && 
-                        (includeSelf || m.PersonId != Person.Id ))
+                    .Where( m =>
+                        m.GroupId == groupId &&
+                        ( includeSelf || m.PersonId != Person.Id ) )
                     .Select( m => new
                     {
                         Id = m.PersonId,
@@ -143,30 +143,12 @@ namespace RockWeb.Blocks.Crm.PersonDetail
                     }
                 }
 
-                xDocument = new XDocument( new XDeclaration( "1.0", "UTF-8", "yes" ), groupsElement );
             }
-        }
 
-        protected override void Render( System.Web.UI.HtmlTextWriter writer )
-        {
-            try
-            {
-                if ( xDocument != null && !String.IsNullOrEmpty( AttributeValue( "XsltFile" ) ) )
-                {
-                    string xsltFile = AttributeValue( "XsltFile" );
-                    if ( !String.IsNullOrEmpty( xsltFile ) )
-                    {
-                        string xsltPath = Server.MapPath( "~/Themes/" + CurrentPage.Site.Theme + "/Assets/Xslt/" + AttributeValue( "XsltFile" ) );
-                        var xslt = new XslCompiledTransform();
-                        xslt.Load( xsltPath );
-                        xslt.Transform( xDocument.CreateReader(), null, writer );
-                    }
-                }
-            }
-            catch ( Exception ex )
-            {
-                writer.Write( "Error: " + ex.Message );
-            }
+            xDocument = new XDocument( new XDeclaration( "1.0", "UTF-8", "yes" ), groupsElement );
+
+            xmlContent.DocumentContent = xDocument.ToString();
+            xmlContent.TransformSource = Server.MapPath( "~/Themes/" + CurrentPage.Site.Theme + "/Assets/Xslt/" + AttributeValue( "XsltFile" ) );
         }
     }
 }
