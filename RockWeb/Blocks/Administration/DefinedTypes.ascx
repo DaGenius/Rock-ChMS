@@ -14,7 +14,7 @@
             </fieldset>
         </div>
 
-        <Rock:Grid ID="rGridType" runat="server" AllowSorting="true" ShowHeader="true" EmptyDataText="No Defined Types Found">
+        <Rock:Grid ID="rGridType" runat="server" AllowSorting="true" RowItemText="setting" EmptyDataText="No Defined Types Found">
             <Columns>
                 <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id"/>
                 <asp:BoundField DataField="Category" HeaderText="Category" SortExpression="Category" />
@@ -34,24 +34,15 @@
     <asp:Panel ID="pnlTypeDetails" runat="server" Visible="false">
         
         <asp:ValidationSummary ID="ValidationSummary1" runat="server" HeaderText="Please Correct the Following" CssClass="alert-message block-message error"/>
+                     
+        <fieldset>
+            <legend><asp:Literal ID="lType" runat="server" Text=""></asp:Literal></legend>
+            <Rock:DataTextBox ID="tbTypeName" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Name" />
+            <Rock:DataTextBox ID="tbTypeCategory" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Category" />
+            <Rock:DataTextBox ID="tbTypeDescription" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Description" TextMode="MultiLine" Rows="3" />
+            <Rock:FieldTypeList ID="ddlTypeFieldType" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="FieldType" />
+        </fieldset>
 
-        <div class="row">              
-            <fieldset>
-                <legend><asp:Literal ID="lType" runat="server">Types</asp:Literal></legend>
-                <Rock:DataTextBox ID="tbTypeName" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Name" />
-                <Rock:DataTextBox ID="tbTypeCategory" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Category" />
-                <Rock:DataTextBox ID="tbTypeDescription" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="Description" TextMode="MultiLine" Rows="3" />
-                <Rock:FieldTypeList ID="ddlTypeFieldType" runat="server" SourceTypeName="Rock.Core.DefinedType, Rock" PropertyName="FieldType" />
-
-                <%-- <asp:TemplateField HeaderText="Name" showHeader="true" ItemStyle-Width="35%">
-                    <ItemTemplate>
-                        <asp:LinkButton runat="server" Text='<%#Eval("Name") %>' OnCommand="typeValues_Edit" CommandArgument='<%#Eval("ID")%>'/>
-                    </ItemTemplate>
-                </asp:TemplateField> --%>
-
-            </fieldset>
-        </div>
-        
         <div class="actions">
             <asp:LinkButton ID="btnSaveType" runat="server" Text="Save" CssClass="btn primary" onclick="btnSaveType_Click" />
             <asp:LinkButton id="btnCancelType" runat="server" Text="Cancel" CssClass="btn secondary" CausesValidation="false" OnClick="btnCancelType_Click" />
@@ -61,10 +52,6 @@
     
     <asp:Panel ID="pnlAttributes" runat="server" Visible="false">
   
-        <asp:ValidationSummary ID="ValidationSummary2" runat="server" CssClass="failureNotification"/>
-
-        <%-- <div class="row"> --%>
-
         <Rock:Grid ID="rGridAttribute" runat="server" AllowSorting="true" ShowHeader="true" EmptyDataText="No Attributes Found">
             <Columns>
                 <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id"/>
@@ -74,15 +61,7 @@
                 <Rock:BoolField DataField="IsGridColumn" HeaderText="Grid Column" SortExpression="IsGridColumn"/>
                 <Rock:BoolField DataField="IsRequired" HeaderText="Required" SortExpression="IsRequired"/>
                 <Rock:EditField OnClick="rGridAttribute_Edit" />
-                <Rock:DeleteField OnClick="rGridAttribute_Delete" />
-
-                <%--
-                <asp:TemplateField>
-                    <ItemStyle HorizontalAlign="Center" CssClass="grid-icon-cell edit"/>
-                    <ItemTemplate>
-                        <a href="#" onclick="editAttribute(<%# Eval("Id") %>);">Edit</a>
-                    </ItemTemplate>
-                </asp:TemplateField> --%>                
+                <Rock:DeleteField OnClick="rGridAttribute_Delete" />               
             </Columns>
         </Rock:Grid>
 
@@ -92,26 +71,17 @@
 
     <asp:Panel ID="pnlValues" runat="server" Visible="false">
     
-        <asp:ValidationSummary ID="ValidationSummary3" runat="server" CssClass="failureNotification"/>
-
-        <h3>Defined Values</h3>
+        <label class="control-label">
+            <asp:Literal ID="valueCaption" runat="server" Text="Defined Values"></asp:Literal>
+        </label>
                 
-        <%-- <div class="row">  --%>
-
-        <Rock:Grid ID="rGridValue" runat="server" ShowHeader="true" AllowSorting="true" EmptyDataText="No Default Values Found" >
+        <Rock:Grid ID="rGridValue" runat="server" ShowHeader="true" AllowSorting="true" EmptyDataText="No Defined Values Found" >
             <Columns>
                 <asp:BoundField DataField="Id" HeaderText="ID" SortExpression="Id"/>
                 <asp:BoundField DataField="Name" HeaderText="Name" SortExpression="Name"/>
                 <asp:BoundField DataField="Description" HeaderText="Description" SortExpression="Description" />
                 <Rock:EditField Onclick="rGridValue_Edit" />
-                <Rock:DeleteField OnClick="rGridValue_Delete" />
-
-                <%--<asp:TemplateField>
-                    <ItemStyle HorizontalAlign="Center" CssClass="grid-icon-cell edit"/>
-                    <ItemTemplate>
-                        <a href="#" onclick="editValue(<%# Eval("Id") %>);">Edit</a>
-                    </ItemTemplate>
-                </asp:TemplateField> --%>                
+                <Rock:DeleteField OnClick="rGridValue_Delete" />      
             </Columns>
         </Rock:Grid>
         
@@ -125,7 +95,7 @@
     <Rock:ModalDialog ID="modalAttributes" runat="server" Title="Attribute Values">
     <Content>
         <asp:HiddenField ID="hfIdAttribute" runat="server" />
-        <asp:ValidationSummary ID="valAttributeSummary" runat="server" HeaderText="Please Correct the Following" CssClass="alert-message block-message error"/>
+        <asp:ValidationSummary ID="valSummaryAttribute" runat="server" HeaderText="Please Correct the Following" CssClass="alert-message block-message error"/>
         <fieldset>
             <Rock:DataTextBox ID="tbAttributeKey" runat="server" SourceTypeName="Rock.Core.Attribute, Rock" PropertyName="Key" />
             <Rock:DataTextBox ID="tbAttributeName" runat="server" SourceTypeName="Rock.Core.Attribute, Rock" PropertyName="Name" />
@@ -147,8 +117,12 @@
         <fieldset>
             <Rock:DataTextBox ID="tbValueName" runat="server" SourceTypeName="Rock.Core.DefinedValue, Rock" PropertyName="Name" />
             <Rock:DataTextBox ID="tbValueDescription" runat="server" SourceTypeName="Rock.Core.DefinedValue, Rock" PropertyName="Description" TextMode="MultiLine" Rows="3" />
-            <h4>Attribute Category</h4>
-            <Rock:DataTextBox ID="tbValueGridColumn" runat="server" ReadOnly="true" SourceTypeName="Rock.Core.DefinedValue, Rock" PropertyName="Attributes" LabelText="Grid Attributes"/>
+            <div class="control-group">
+                <label class="control-label">Attributes</label>
+                <div class="controls">
+                    <asp:PlaceHolder ID="phAttrControl" runat="server"></asp:PlaceHolder>
+                </div>
+            </div>
         </fieldset>
     </Content>
     </Rock:ModalDialog>
