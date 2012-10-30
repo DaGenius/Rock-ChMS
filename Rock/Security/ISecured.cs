@@ -16,11 +16,19 @@ namespace Rock.Security
     public interface ISecured
     {
         /// <summary>
+        /// Gets the Entity Type ID for this entity.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        int TypeId { get; }
+
+        /// <summary>
         /// The auth entity. Classes that implement the <see cref="ISecured"/> interface should return
         /// a value that is unique across all <see cref="ISecured"/> classes.  Typically this is the 
         /// qualified name of the class. 
         /// </summary>
-        string EntityTypeName { get; }
+        string TypeName { get; }
 
         /// <summary>
         /// The Id

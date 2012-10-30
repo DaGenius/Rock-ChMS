@@ -8,11 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Services;
 using System.Data.Services.Common;
-using System.Linq;
 using System.Runtime.Serialization;
-using Rock.Security;
 
 namespace Rock.Data
 {
@@ -35,27 +32,65 @@ namespace Rock.Data
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the GUID.
+        /// Gets or 
         /// </summary>
         /// <value>
         /// The GUID.
         /// </value>
         [AlternateKey]
         [DataMember]
-        public Guid Guid { 
+        public Guid Guid
+        {
             get { return _guid; }
             set { _guid = value; }
         }
         private Guid _guid = Guid.NewGuid();
 
         /// <summary>
+        /// Gets the type id.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        public virtual int TypeId
+        {
+            get
+            {
+                // Read should never return null since it will create entity type if it doesn't exist
+                return Rock.Web.Cache.EntityTypeCache.Read( this.TypeName ).Id;
+            }
+        }
+
+        /// <summary>
         /// Gets the unique type name of the entity.  Typically this is the qualified name of the class
         /// </summary>
         /// <value>
-        /// The type of the entity.
+        /// The name of the entity type.
         /// </value>
         [NotMapped]
-        public abstract string EntityTypeName { get; }
+        public virtual string TypeName 
+        {
+            get
+            {
+                return typeof( T ).FullName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the entity type friendly.
+        /// </summary>
+        /// <value>
+        /// The name of the entity type friendly.
+        /// </value>
+        [NotMapped]
+        public static string FriendlyTypeName
+        {
+            get
+            {
+                var type = typeof( T );
+                return type.GetFriendlyTypeName();
+            }
+        }
 
         /// <summary>
         /// Gets a publicly viewable unique key for the model.
@@ -81,11 +116,11 @@ namespace Rock.Data
         {
             get
             {
-                string identifier = 
-                    typeof(T).FullName + "|" +
-                    this.Id.ToString() + ">" + 
+                string identifier =
+                    typeof( T ).FullName + "|" +
+                    this.Id.ToString() + ">" +
                     this.Guid.ToString();
-                return System.Web.HttpUtility.UrlEncode(Rock.Security.Encryption.EncryptString( identifier ));
+                return System.Web.HttpUtility.UrlEncode( Rock.Security.Encryption.EncryptString( identifier ) );
             }
         }
 

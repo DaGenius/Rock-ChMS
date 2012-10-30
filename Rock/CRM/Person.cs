@@ -264,12 +264,6 @@ namespace Rock.Crm
         }
         
         /// <summary>
-        /// Gets the auth entity.
-        /// </summary>
-        [NotMapped]
-        public override string EntityTypeName { get { return "Crm.Person"; } }
-        
-        /// <summary>
         /// Gets or sets the Users.
         /// </summary>
         /// <value>
@@ -299,7 +293,7 @@ namespace Rock.Crm
         /// <value>
         /// Collection of Members.
         /// </value>
-        public virtual ICollection<Groups.Member> Members { get; set; }
+        public virtual ICollection<Crm.GroupMember> Members { get; set; }
 
         /// <summary>
         /// Gets or sets the Pledges.

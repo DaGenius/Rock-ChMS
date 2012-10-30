@@ -22,15 +22,14 @@ namespace Rock.Core
     public partial class Audit : Entity<Audit>
     {
         /// <summary>
-        /// Gets or sets the Entity Type.
+        /// Gets or sets the Entity Type Id.
         /// </summary>
         /// <value>
-        /// Entity Type.
+        /// Entity Type Id.
         /// </value>
         [Required]
-        [MaxLength( 100 )]
         [DataMember]
-        public string EntityType { get; set; }
+        public int EntityTypeId { get; set; }
         
         /// <summary>
         /// Gets or sets the Entity Id.
@@ -51,7 +50,7 @@ namespace Rock.Core
         [Required]
         [MaxLength( 200 )]
         [DataMember]
-        public string EntityName { get; set; }
+        public string Title { get; set; }
         
         /// <summary>
         /// Type of change: 0:Add, 1:Modify, 2:Delete
@@ -91,6 +90,14 @@ namespace Rock.Core
         public int? PersonId { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of the entity.
+        /// </summary>
+        /// <value>
+        /// The type of the entity.
+        /// </value>
+        public virtual Core.EntityType EntityType { get; set; }
+
+        /// <summary>
         /// Gets or sets the Person.
         /// </summary>
         /// <value>
@@ -98,12 +105,6 @@ namespace Rock.Core
         /// </value>
         public virtual Rock.Crm.Person Person { get; set; }
 
-        /// <summary>
-        /// Gets the auth entity.
-        /// </summary>
-        [NotMapped]
-        public override string EntityTypeName { get { return "Core.Audit"; } }
-        
         /// <summary>
         /// Static Method to return an object based on the id
         /// </summary>
@@ -122,7 +123,7 @@ namespace Rock.Core
         /// </returns>
         public override string ToString()
         {
-            return this.EntityName;
+            return this.Title;
         }
 
     }
@@ -138,6 +139,7 @@ namespace Rock.Core
         public AuditConfiguration()
         {
             this.HasOptional( p => p.Person ).WithMany().HasForeignKey( p => p.PersonId ).WillCascadeOnDelete( true );
+            this.HasRequired( p => p.EntityType ).WithMany().HasForeignKey( p => p.EntityTypeId ).WillCascadeOnDelete( false );
         }
     }
 

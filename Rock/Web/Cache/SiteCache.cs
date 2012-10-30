@@ -116,7 +116,8 @@ namespace Rock.Web.Cache
 
                     site.AttributeValues = siteModel.AttributeValues;
 
-                    site.EntityTypeName = siteModel.EntityTypeName;
+                    site.TypeId = siteModel.TypeId;
+                    site.TypeName = siteModel.TypeName;
                     site.SupportedActions = siteModel.SupportedActions;
 
                     cache.Set( cacheKey, site, new CacheItemPolicy() );
@@ -144,12 +145,20 @@ namespace Rock.Web.Cache
         #region ISecure Implementation
 
         /// <summary>
+        /// Gets the Entity Type ID for this entity.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        public int TypeId { get; set; }
+
+        /// <summary>
         /// Gets or sets the auth entity.
         /// </summary>
         /// <value>
         /// The auth entity.
         /// </value>
-        public string EntityTypeName { get; set; }
+        public string TypeName { get; set; }
 
         /// <summary>
         /// A parent authority.  If a user is not specifically allowed or denied access to

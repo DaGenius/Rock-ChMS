@@ -85,19 +85,13 @@ namespace Rock.Core
         /// <summary>
         /// Static Method to return an object based on the id
         /// </summary>
-        /// <param name="id">The id.</param>
+        /// <param name="guid">The GUID.</param>
         /// <returns></returns>
         public static FieldType Read( Guid guid )
         {
             return Read<FieldType>( guid );
         }
 
-        /// <summary>
-        /// Gets the auth entity.
-        /// </summary>
-        [NotMapped]
-        public override string EntityTypeName { get { return "Core.FieldType"; } }
-        
         /// <summary>
         /// Gets or sets the Defined Types.
         /// </summary>

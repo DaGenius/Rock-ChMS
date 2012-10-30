@@ -44,7 +44,7 @@ namespace Rock.Web.Cache
                 foreach ( int id in AttributeIds )
                 {
                     var attribute = AttributeCache.Read( id );
-                    if ( !attributeCategories.ContainsKey( attribute.Key ) )
+                    if ( !attributeCategories.ContainsKey( attribute.Category ) )
                         attributeCategories.Add( attribute.Category, new List<string>() );
                     attributeCategories[attribute.Category].Add( attribute.Key );
                 }
@@ -240,7 +240,8 @@ namespace Rock.Web.Cache
                 foreach ( var attribute in blockModel.Attributes )
                     block.AttributeIds.Add( attribute.Value.Id );
 
-            block.EntityTypeName = blockModel.EntityTypeName;
+            block.TypeId = blockModel.TypeId;
+            block.TypeName = blockModel.TypeName;
             block.BlockActions = blockModel.SupportedActions;
 
             return block;
@@ -261,10 +262,18 @@ namespace Rock.Web.Cache
         #region ISecure Implementation
 
         /// <summary>
+        /// Gets the Entity Type ID for this entity.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        public int TypeId { get; set; }
+
+        /// <summary>
         /// The auth entity. The auth entity is a unique identifier for each type of class that implements
         /// the <see cref="Rock.Security.ISecured"/> interface.
         /// </summary>
-        public string EntityTypeName { get; set; }
+        public string TypeName { get; set; }
 
         /// <summary>
         /// A parent authority.  If a user is not specifically allowed or denied access to

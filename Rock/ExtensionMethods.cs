@@ -65,6 +65,25 @@ namespace Rock
             return expando;
         }
 
+        /// <summary>
+        /// Gets the name of the friendly type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public static string GetFriendlyTypeName( this Type type )
+        {
+            Rock.Data.FriendlyTypeNameAttribute attrib = type.GetTypeInfo().GetCustomAttribute<Rock.Data.FriendlyTypeNameAttribute>();
+
+            if ( attrib != null )
+            {
+                return attrib.FriendlyTypeName;
+            }
+            else
+            {
+                return SplitCase( type.Name );
+            }
+        }
+
         #endregion
 
         #region String Extensions
@@ -101,6 +120,7 @@ namespace Rock
 
         /// <summary>
         /// Replaces every instance of oldValue (regardless of case) with the newValue.
+        /// from http://www.codeproject.com/Articles/10890/Fastest-C-Case-Insenstive-String-Replace
         /// </summary>
         /// <param name="str">The source string.</param>
         /// <param name="oldValue">The value to replace.</param>
@@ -167,6 +187,17 @@ namespace Rock
                 truncatedString = truncatedString.Substring( 0, lastSpace );
 
             return truncatedString + "...";
+        }
+
+        /// <summary>
+        /// Pluralizes the specified tring.
+        /// </summary>
+        /// <param name="str">The string to pluralize.</param>
+        /// <returns></returns>
+        public static string Pluralize( this string str )
+        {
+            var pluralizationService = System.Data.Entity.Design.PluralizationServices.PluralizationService.CreateService( new System.Globalization.CultureInfo( "en-US" ) );
+            return pluralizationService.Pluralize( str );
         }
 
         #endregion

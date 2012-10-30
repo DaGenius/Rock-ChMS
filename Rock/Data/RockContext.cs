@@ -11,7 +11,7 @@ namespace Rock.Data
     /// <summary>
     /// Entity Framework Context
     /// </summary>
-    internal partial class RockContext : DbContext
+    public partial class RockContext : DbContext
     {
         /// <summary>
         /// Gets or sets the Auths.
@@ -150,6 +150,14 @@ namespace Rock.Data
         public DbSet<Rock.Core.EntityChange> EntityChanges { get; set; }
 
         /// <summary>
+        /// Gets or sets the entity types.
+        /// </summary>
+        /// <value>
+        /// The entity types.
+        /// </value>
+        public DbSet<Rock.Core.EntityType> EntityTypes { get; set; }
+
+        /// <summary>
         /// Gets or sets the Exception Logs.
         /// </summary>
         /// <value>
@@ -267,7 +275,7 @@ namespace Rock.Data
         /// <value>
         /// the Groups.
         /// </value>
-        public DbSet<Rock.Groups.Group> Groups { get; set; }
+        public DbSet<Rock.Crm.Group> Groups { get; set; }
 
         /// <summary>
         /// Gets or sets the Group Roles.
@@ -275,7 +283,7 @@ namespace Rock.Data
         /// <value>
         /// the Group Roles.
         /// </value>
-        public DbSet<Rock.Groups.GroupRole> GroupRoles { get; set; }
+        public DbSet<Rock.Crm.GroupRole> GroupRoles { get; set; }
 
         /// <summary>
         /// Gets or sets the Group Types.
@@ -283,7 +291,7 @@ namespace Rock.Data
         /// <value>
         /// the Group Types.
         /// </value>
-        public DbSet<Rock.Groups.GroupType> GroupTypes { get; set; }
+        public DbSet<Rock.Crm.GroupType> GroupTypes { get; set; }
 
         /// <summary>
         /// Gets or sets the Group Locations.
@@ -291,7 +299,7 @@ namespace Rock.Data
         /// <value>
         /// the Group Locations.
         /// </value>
-        public DbSet<Rock.Groups.GroupLocation> GroupLocations { get; set; }
+        public DbSet<Rock.Crm.GroupLocation> GroupLocations { get; set; }
 
         /// <summary>
         /// Gets or sets the Members.
@@ -299,7 +307,7 @@ namespace Rock.Data
         /// <value>
         /// the Members.
         /// </value>
-        public DbSet<Rock.Groups.Member> Members { get; set; }
+        public DbSet<Rock.Crm.GroupMember> Members { get; set; }
 
         /// <summary>
         /// Gets or sets the Jobs.
@@ -406,6 +414,7 @@ namespace Rock.Data
             modelBuilder.Configurations.Add( new Rock.Core.DefinedTypeConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.DefinedValueConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.EntityChangeConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Core.EntityTypeConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.ExceptionLogConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.FieldTypeConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.MetricConfiguration() );
@@ -425,11 +434,11 @@ namespace Rock.Data
             modelBuilder.Configurations.Add( new Rock.Financial.TransactionDetailConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Financial.PersonAccountLookupConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Financial.TransactionFundConfiguration() );
-            modelBuilder.Configurations.Add( new Rock.Groups.GroupConfiguration() );
-            modelBuilder.Configurations.Add( new Rock.Groups.GroupRoleConfiguration() );
-            modelBuilder.Configurations.Add( new Rock.Groups.GroupTypeConfiguration() );
-            modelBuilder.Configurations.Add( new Rock.Groups.GroupLocationConfiguration() );
-            modelBuilder.Configurations.Add( new Rock.Groups.MemberConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Crm.GroupConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Crm.GroupRoleConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Crm.GroupTypeConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Crm.GroupLocationConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Crm.MemberConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Util.JobConfiguration() );
         }
     }

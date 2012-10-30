@@ -29,12 +29,20 @@ namespace Rock.Data
         Guid Guid { get; set; }
 
         /// <summary>
+        /// Gets the Entity Type ID for this entity.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        int TypeId { get; }
+
+        /// <summary>
         /// Gets the unique type name of the entity.  Typically this is the qualified name of the class
         /// </summary>
         /// <value>
         /// The name of the entity type.
         /// </value>
-        string EntityTypeName { get; }
+        string TypeName { get; }
 
         /// <summary>
         /// Gets the encrypted key.

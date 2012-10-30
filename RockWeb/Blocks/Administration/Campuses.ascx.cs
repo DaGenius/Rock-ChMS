@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Rock;
+using Rock.Constants;
 using Rock.Crm;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
@@ -57,7 +58,7 @@ namespace RockWeb.Blocks.Administration
             else
             {
                 gCampuses.Visible = false;
-                nbMessage.Text = "You are not authorized to edit campuses";
+                nbMessage.Text = WarningMessage.NotAuthorizedToEdit( Campus.FriendlyTypeName );
                 nbMessage.Visible = true;
             }
 
@@ -141,11 +142,7 @@ namespace RockWeb.Blocks.Administration
             Campus campus;
             CampusService campusService = new CampusService();
 
-            int campusId = 0;
-            if ( !int.TryParse( hfCampusId.Value, out campusId ) )
-            {
-                campusId = 0;
-            }
+            int campusId = int.Parse( hfCampusId.Value ); ;
 
             if ( campusId == 0 )
             {
@@ -162,7 +159,7 @@ namespace RockWeb.Blocks.Administration
             // check for duplicates
             if ( campusService.Queryable().Count( a => a.Name.Equals( campus.Name, StringComparison.OrdinalIgnoreCase ) && !a.Id.Equals( campus.Id ) ) > 0 )
             {
-                nbMessage.Text = "This name is already being used on another campus.";
+                nbMessage.Text = WarningMessage.DuplicateFoundMessage( "name", Campus.FriendlyTypeName );
                 nbMessage.Visible = true;
                 return;
             }
@@ -211,20 +208,20 @@ namespace RockWeb.Blocks.Administration
         {
             pnlList.Visible = false;
             pnlDetails.Visible = true;
-            
+
             CampusService campusService = new CampusService();
             Campus campus = campusService.Get( campusId );
 
             if ( campus != null )
             {
-                lActionTitle.Text = "Edit Campus";
+                lActionTitle.Text = ActionTitle.Edit( Campus.FriendlyTypeName );
                 hfCampusId.Value = campus.Id.ToString();
                 tbCampusName.Text = campus.Name;
             }
             else
             {
-                lActionTitle.Text = "Add Campus";
-                hfCampusId.Value = string.Empty;
+                lActionTitle.Text = ActionTitle.Add( Campus.FriendlyTypeName );
+                hfCampusId.Value = 0.ToString();
                 tbCampusName.Text = string.Empty;
             }
         }

@@ -328,7 +328,7 @@ namespace Rock.Web.Cache
 
                     if ( string.IsNullOrWhiteSpace( keyModel.Key ) )
                     {
-                        MethodInfo getMethod = service.GetMethod( "Get", new Type[] { typeof(int) });
+                        MethodInfo getMethod = service.GetMethod( "Get", new Type[] { typeof(int) } );
                         keyModel.Entity = getMethod.Invoke( serviceInstance, new object[] { keyModel.Id } ) as Rock.Data.IEntity;
                     }
                     else
@@ -595,7 +595,8 @@ namespace Rock.Web.Cache
                 foreach ( var pageContext in pageModel.PageContexts )
                     page.PageContexts.Add( pageContext.Entity, pageContext.IdParameter );
 
-            page.EntityTypeName = pageModel.EntityTypeName;
+            page.TypeId = pageModel.TypeId;
+            page.TypeName = pageModel.TypeName;
             page.SupportedActions = pageModel.SupportedActions;
 
             return page;
@@ -657,12 +658,20 @@ namespace Rock.Web.Cache
         #region ISecure Implementation
 
         /// <summary>
+        /// Gets the Entity Type ID for this entity.
+        /// </summary>
+        /// <value>
+        /// The type id.
+        /// </value>
+        public int TypeId { get; set; }
+
+        /// <summary>
         /// Gets or sets the auth entity.
         /// </summary>
         /// <value>
         /// The auth entity.
         /// </value>
-        public string EntityTypeName { get; set; }
+        public string TypeName { get; set; }
 
         /// <summary>
         /// A parent authority.  If a user is not specifically allowed or denied access to
