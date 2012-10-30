@@ -524,9 +524,6 @@
     <Compile Include="Migrations\201210191237338_DotLiquid.Designer.cs">
       <DependentUpon>201210191237338_DotLiquid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201210221841121_Notes.cs" />
-    <Compile Include="Migrations\201210221841121_Notes.Designer.cs">
-      <DependentUpon>201210221841121_Notes.cs</DependentUpon>
     <Compile Include="Migrations\201210250001532_AddGroupPageBlock1.cs" />
     <Compile Include="Migrations\201210250001532_AddGroupPageBlock1.Designer.cs">
       <DependentUpon>201210250001532_AddGroupPageBlock1.cs</DependentUpon>
@@ -566,6 +563,10 @@
     <Compile Include="Migrations\201210301603196_TagEntityType.cs" />
     <Compile Include="Migrations\201210301603196_TagEntityType.Designer.cs">
       <DependentUpon>201210301603196_TagEntityType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201210301651590_Notes.cs" />
+    <Compile Include="Migrations\201210301651590_Notes.Designer.cs">
+      <DependentUpon>201210301651590_Notes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\RockCSharpMigrationCodeGenerator.cs" />
@@ -963,8 +964,6 @@
     <EmbeddedResource Include="Migrations\201210191237338_DotLiquid.resx">
       <DependentUpon>201210191237338_DotLiquid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201210221841121_Notes.resx">
-      <DependentUpon>201210221841121_Notes.cs</DependentUpon>
     <EmbeddedResource Include="Migrations\201210250001532_AddGroupPageBlock1.resx">
       <DependentUpon>201210250001532_AddGroupPageBlock1.cs</DependentUpon>
     </EmbeddedResource>
@@ -994,6 +993,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201210301603196_TagEntityType.resx">
       <DependentUpon>201210301603196_TagEntityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201210301651590_Notes.resx">
+      <DependentUpon>201210301651590_Notes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -78,25 +78,25 @@ namespace Rock.Migrations
 
                 DECLARE @DefinedValueId int
                 INSERT INTO [coreDefinedValue] ([IsSystem],[DefinedTypeId],[Order],[Name],[Description],[Guid])
-	                VALUES (1, @DefinedTypeId, 0, 'Personal Note', 'Note manually entered by a logged-in user', NEWID())
+	                VALUES (1, @DefinedTypeId, 0, 'Personal Note', 'Note manually entered by a logged-in user', '4318E9AC-B669-4AF7-AF88-EF580FC43C6A')
                 SET @DefinedValueId = SCOPE_IDENTITY()
                 INSERT INTO [coreAttributeValue] ([IsSystem],[AttributeId],[EntityId],[Order],[Value],[Guid])
 	                VALUES (1, @AttributeId, @DefinedValueId, 0, 'icon-comment', NEWID())
 
                 INSERT INTO [coreDefinedValue] ([IsSystem],[DefinedTypeId],[Order],[Name],[Description],[Guid])
-	                VALUES (1, @DefinedTypeId, 1, 'Event Registration', 'Note created when person registers for an event', NEWID())
+	                VALUES (1, @DefinedTypeId, 1, 'Event Registration', 'Note created when person registers for an event', 'BBADA8EF-23FC-4B46-B7A7-0F6D31F8C045')
                 SET @DefinedValueId = SCOPE_IDENTITY()
                 INSERT INTO [coreAttributeValue] ([IsSystem],[AttributeId],[EntityId],[Order],[Value],[Guid])
 	                VALUES (1, @AttributeId, @DefinedValueId, 0, 'icon-calendar', NEWID())
 
                 INSERT INTO [coreDefinedValue] ([IsSystem],[DefinedTypeId],[Order],[Name],[Description],[Guid])
-	                VALUES (1, @DefinedTypeId, 2, 'Communication Note', 'Note created when person is emailed a communication', NEWID())
+	                VALUES (1, @DefinedTypeId, 2, 'Communication Note', 'Note created when person is emailed a communication', '87BACB34-DB87-45E0-AB60-BFABF7CEECDB')
                 SET @DefinedValueId = SCOPE_IDENTITY()
                 INSERT INTO [coreAttributeValue] ([IsSystem],[AttributeId],[EntityId],[Order],[Value],[Guid])
 	                VALUES (1, @AttributeId, @DefinedValueId, 0, 'icon-envelope', NEWID())
 
                 INSERT INTO [coreDefinedValue] ([IsSystem],[DefinedTypeId],[Order],[Name],[Description],[Guid])
-	                VALUES (1, @DefinedTypeId, 3, 'Phone Note', 'Note created when a phone call is made with person', NEWID())
+	                VALUES (1, @DefinedTypeId, 3, 'Phone Note', 'Note created when a phone call is made with person', 'B54F9D90-9AF3-4E8A-8F33-9338C7C1287F')
                 SET @DefinedValueId = SCOPE_IDENTITY()
                 INSERT INTO [coreAttributeValue] ([IsSystem],[AttributeId],[EntityId],[Order],[Value],[Guid])
 	                VALUES (1, @AttributeId, @DefinedValueId, 0, 'icon-phone', NEWID())

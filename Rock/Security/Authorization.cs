@@ -281,13 +281,13 @@ namespace Rock.Security
                 // If there are entries in the Authorizations object for this entity type and entity instance, evaluate each 
                 // one to find the first one specific to the selected user or a role that the selected user belongs 
                 // to.  If a match is found return whether the user is allowed (true) or denied (false) access
-                if ( Authorizations.Keys.Contains( entity.EntityTypeName ) &&
-                    Authorizations[entity.EntityTypeName].Keys.Contains( entity.Id ) &&
-                    Authorizations[entity.EntityTypeName][entity.Id].Keys.Contains( action ) &&
-                    Authorizations[entity.EntityTypeName][entity.Id][action].Count == 2 )
+                if ( Authorizations.Keys.Contains( entity.TypeId ) &&
+                    Authorizations[entity.TypeId].Keys.Contains( entity.Id ) &&
+                    Authorizations[entity.TypeId][entity.Id].Keys.Contains( action ) &&
+                    Authorizations[entity.TypeId][entity.Id][action].Count == 2 )
                 {
-                    AuthRule firstRule = Authorizations[entity.EntityTypeName][entity.Id][action][0];
-                    AuthRule secondRule = Authorizations[entity.EntityTypeName][entity.Id][action][1];
+                    AuthRule firstRule = Authorizations[entity.TypeId][entity.Id][action][0];
+                    AuthRule secondRule = Authorizations[entity.TypeId][entity.Id][action][1];
 
                     // If first rule allows current user, and second rule denies all other users then entity is private
                     if ( firstRule.AllowOrDeny == "A" &&
@@ -327,24 +327,24 @@ namespace Rock.Security
 
                     // If there are not entries in the Authorizations object for this entity type and entity instance, create
                     // the dictionary entries
-                    if ( !Authorizations.Keys.Contains( entity.EntityTypeName ))
+                    if ( !Authorizations.Keys.Contains( entity.TypeId ) )
                     {
-                        Authorizations.Add(entity.EntityTypeName, new Dictionary<int,Dictionary<string,List<AuthRule>>>());
+                        Authorizations.Add( entity.TypeId, new Dictionary<int, Dictionary<string, List<AuthRule>>>() );
                     }
 
-                    if ( !Authorizations[entity.EntityTypeName].Keys.Contains( entity.Id ))
+                    if ( !Authorizations[entity.TypeId].Keys.Contains( entity.Id ) )
                     {
-                        Authorizations[entity.EntityTypeName].Add(entity.Id, new Dictionary<string,List<AuthRule>>());
+                        Authorizations[entity.TypeId].Add( entity.Id, new Dictionary<string, List<AuthRule>>() );
                     }
 
-                    if (!Authorizations[entity.EntityTypeName][entity.Id].Keys.Contains( action ))
+                    if ( !Authorizations[entity.TypeId][entity.Id].Keys.Contains( action ) )
                     {
-                        Authorizations[entity.EntityTypeName][entity.Id].Add( action, new List<AuthRule>() );
+                        Authorizations[entity.TypeId][entity.Id].Add( action, new List<AuthRule>() );
                     }
                     else
                     {
                         // If existing rules exist, delete them.
-                        foreach ( AuthRule authRule in Authorizations[entity.EntityTypeName][entity.Id][action] )
+                        foreach ( AuthRule authRule in Authorizations[entity.TypeId][entity.Id][action] )
                         {
                             var oldAuth = authService.Get( authRule.Id );
                             authService.Delete( oldAuth, personId );
@@ -354,7 +354,7 @@ namespace Rock.Security
                     var rules = new List<AuthRule>();
 
                     Auth auth = new Auth();
-                    auth.EntityType = entity.EntityTypeName;
+                    auth.EntityTypeId = entity.TypeId;
                     auth.EntityId = entity.Id;
                     auth.Order = 0;
                     auth.Action = action;
@@ -366,7 +366,7 @@ namespace Rock.Security
                     rules.Add( new AuthRule( auth ) );
 
                     auth = new Auth();
-                    auth.EntityType = entity.EntityTypeName;
+                    auth.EntityTypeId = entity.TypeId;
                     auth.EntityId = entity.Id;
                     auth.Order = 1;
                     auth.Action = action;
@@ -376,7 +376,7 @@ namespace Rock.Security
                     authService.Save( auth, personId );
                     rules.Add( new AuthRule( auth ) );
 
-                    Authorizations[entity.EntityTypeName][entity.Id][action] = rules; 
+                    Authorizations[entity.TypeId][entity.Id][action] = rules; 
                 }
             }
         }
