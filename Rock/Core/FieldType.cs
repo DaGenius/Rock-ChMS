@@ -83,7 +83,7 @@ namespace Rock.Core
         }
 
         /// <summary>
-        /// Static Method to return an object based on the id
+        /// Static Method to return an object based on the guid
         /// </summary>
         /// <param name="guid">The GUID.</param>
         /// <returns></returns>

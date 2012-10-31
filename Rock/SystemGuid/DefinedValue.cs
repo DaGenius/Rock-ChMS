@@ -14,6 +14,11 @@ namespace Rock.SystemGuid
     public static class DefinedValue
     {
         /// <summary>
+        /// Manually entered note.
+        /// </summary>
+        public static Guid NOTE_TYPE_MANUAL_NOTE { get { return new Guid( "4318E9AC-B669-4AF7-AF88-EF580FC43C6A" ); } }
+
+        /// <summary>
         /// Active Record Status
         /// </summary>
         public static Guid PERSON_RECORD_STATUS_ACTIVE { get { return new Guid( "618F906C-C33D-4FA3-8AEF-E58CB7B63F1E" ); } }

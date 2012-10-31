@@ -89,6 +89,16 @@ namespace Rock.Core
         }
 
         /// <summary>
+        /// Static Method to return an object based on the guid
+        /// </summary>
+        /// <param name="guid">The GUID.</param>
+        /// <returns></returns>
+        public static DefinedValue Read( Guid guid )
+        {
+            return Read<DefinedValue>( guid );
+        }
+
+        /// <summary>
         /// Gets the parent authority.
         /// </summary>
         public override Security.ISecured ParentAuthority

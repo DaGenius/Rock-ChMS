@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Notes.ascx.cs" Inherits="RockWeb.Blocks.Core.Notes" %>
 
+<asp:UpdatePanel ID="upNotes" runat="server">
+<ContentTemplate>
+
 <div class="span8 person-notes-container">
     <section id="person-notes" class="person-notes scroll-container">
         <header class="group">
@@ -22,23 +25,24 @@
                     
         <div id="note-entry" style="display: none;">
             <label>Note</label>
-            <textarea></textarea>
+            <asp:TextBox ID="tbNewNote" runat="server" TextMode="MultiLine"></asp:TextBox>
  
             <div class="row-fluid">
                 <div class="span4">
                     <label class="checkbox">
-                        <input type="checkbox" value="">
+                        <asp:CheckBox ID="cbAlert" runat="server" />
                         Alert
                     </label>
                 </div>
                 <div class="span4">
                     <label class="checkbox">
-                        <input type="checkbox" value="">
+                        <asp:CheckBox ID="cbPrivate" runat="server" />
                         Private
                     </label>
                 </div>
                 <div class="span4">
                     <button class="btn btn-mini" type="button"><i class="icon-lock"></i> Security</button>
+                    <asp:Button ID="btnAddNote" runat="server" CssClass="btn btn-mini" Text="Add" />
                 </div>
             </div>
         </div>
@@ -69,3 +73,6 @@
     </script>
         
 </div>
+
+</ContentTemplate>
+</asp:UpdatePanel>

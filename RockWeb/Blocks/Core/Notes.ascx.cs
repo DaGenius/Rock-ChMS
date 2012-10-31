@@ -13,6 +13,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
 using System.Web.UI.HtmlControls;
+
 using Rock;
 using Rock.Core;
 using Rock.Web.UI;
@@ -30,6 +31,12 @@ namespace RockWeb.Blocks.Core
         private Rock.Core.Attribute noteAttribute;
         private List<Rock.Core.Attribute> subAttributes;
 
+        protected override void OnInit( EventArgs e )
+        {
+            base.OnInit( e );
+            btnAddNote.Click += btnAddNote_Click;
+        }
+
         protected override void OnLoad( EventArgs e )
         {
             base.OnLoad( e );
@@ -45,95 +52,177 @@ namespace RockWeb.Blocks.Core
             if ( !String.IsNullOrEmpty( contextTypeName ) && contextEntity != null )
             {
                 ReadAttributes();
+                if ( !Page.IsPostBack )
+                    ShowNotes();
             }
         }
 
-        void pnlNotes_PreRender( object sender, EventArgs e )
+        void btnAddNote_Click( object sender, EventArgs e )
         {
-            throw new NotImplementedException();
+            var attributeValueService = new AttributeValueService();
+
+            int? order = attributeValueService.Queryable()
+                .Where( v => 
+                    v.AttributeId == noteAttribute.Id &&
+                    v.EntityId == contextEntity.Id
+                )
+                .Select( v => ( int? )v.Order ).Max();
+
+            var attributeValue = new AttributeValue();
+            attributeValue.IsSystem = false;
+            attributeValue.AttributeId = noteAttribute.Id;
+            attributeValue.EntityId = contextEntity.Id;
+            attributeValue.Order = order.HasValue ? order.Value + 1 : 0;
+            attributeValue.Value = tbNewNote.Text;
+            attributeValueService.Add( attributeValue, CurrentPersonId );
+            attributeValueService.Save( attributeValue, CurrentPersonId);
+
+            if ( cbPrivate.Checked )
+            {
+                attributeValue.MakePrivate( "View", CurrentPerson, CurrentPersonId );
+            }
+
+            if ( subAttributes.Exists( a => a.Key == "Alert") )
+            {
+                var alertAttributeValue = new AttributeValue();
+                alertAttributeValue.IsSystem = false;
+                alertAttributeValue.AttributeId = subAttributes.Where( a => a.Key == "Alert" ).Select( a => a.Id ).First();
+                alertAttributeValue.EntityId = attributeValue.Id;
+                alertAttributeValue.Order = 0;
+                alertAttributeValue.Value = cbAlert.Checked.ToTrueFalse();
+                attributeValueService.Add( alertAttributeValue, CurrentPersonId );
+                attributeValueService.Save( alertAttributeValue, CurrentPersonId );
+            }
+
+            if ( subAttributes.Exists( a => a.Key == "Date" ) )
+            {
+                var dateAttributeValue = new AttributeValue();
+                dateAttributeValue.IsSystem = false;
+                dateAttributeValue.AttributeId = subAttributes.Where( a => a.Key == "Date" ).Select( a => a.Id ).First();
+                dateAttributeValue.EntityId = attributeValue.Id;
+                dateAttributeValue.Order = 0;
+                dateAttributeValue.Value = DateTime.Now.ToString();
+                attributeValueService.Add( dateAttributeValue, CurrentPersonId );
+                attributeValueService.Save( dateAttributeValue, CurrentPersonId );
+            }
+
+            if ( subAttributes.Exists( a => a.Key == "Title" ) )
+            {
+                var titleAttributeValue = new AttributeValue();
+                titleAttributeValue.IsSystem = false;
+                titleAttributeValue.AttributeId = subAttributes.Where( a => a.Key == "Title" ).Select( a => a.Id ).First();
+                titleAttributeValue.EntityId = attributeValue.Id;
+                titleAttributeValue.Order = 0;
+                titleAttributeValue.Value = CurrentPerson.FullName;
+                attributeValueService.Add( titleAttributeValue, CurrentPersonId );
+                attributeValueService.Save( titleAttributeValue, CurrentPersonId );
+            }
+
+            if ( subAttributes.Exists( a => a.Key == "Type" ) )
+            {
+                var titleAttributeValue = new AttributeValue();
+                titleAttributeValue.IsSystem = false;
+                titleAttributeValue.AttributeId = subAttributes.Where( a => a.Key == "Type" ).Select( a => a.Id ).First();
+                titleAttributeValue.EntityId = attributeValue.Id;
+                titleAttributeValue.Order = 0;
+                titleAttributeValue.Value = DefinedValue.Read( Rock.SystemGuid.DefinedValue.NOTE_TYPE_MANUAL_NOTE ).Id.ToString();
+                attributeValueService.Add( titleAttributeValue, CurrentPersonId );
+                attributeValueService.Save( titleAttributeValue, CurrentPersonId );
+            }
+
+            ShowNotes();
         }
 
         private void ReadAttributes()
         {
-            using ( new Rock.Data.UnitOfWorkScope() )
+            var attributeService = new AttributeService();
+
+            // Note Attribute
+            string attributeKey = AttributeValue( "AttributeKey" );
+            noteAttribute = attributeService.Queryable()
+                .Where( a =>
+                    a.Entity == contextTypeName &&
+                    a.Key == attributeKey )
+                .FirstOrDefault();
+
+            // If an attribute with the specified key does not exist for the context entity type, create one
+            if ( noteAttribute == null )
             {
-                var attributeService = new AttributeService();
-                var attributeValueService = new AttributeValueService();
+                noteAttribute = new Rock.Core.Attribute();
+                noteAttribute.IsSystem = false;
+                noteAttribute.Entity = contextTypeName;
+                noteAttribute.EntityQualifierColumn = string.Empty;
+                noteAttribute.EntityQualifierValue = string.Empty;
+                noteAttribute.Key = attributeKey;
+                noteAttribute.Name = attributeKey.SplitCase();
+                noteAttribute.Category = string.Empty;
+                noteAttribute.Description = attributeKey.SplitCase();
+                noteAttribute.FieldTypeId = FieldType.Read( Rock.SystemGuid.FieldType.TEXT ).Id;
+                noteAttribute.DefaultValue = string.Empty;
+                noteAttribute.IsMultiValue = true;
+                noteAttribute.IsRequired = false;
+                attributeService.Add( noteAttribute, CurrentPersonId );
+                attributeService.Save( noteAttribute, CurrentPersonId );
+            }
 
-                // Note Attribute
-                string attributeKey = AttributeValue( "AttributeKey" );
-                var noteAttribute = attributeService.Queryable()
-                    .Where( a =>
-                        a.Entity == contextTypeName &&
-                        a.Key == attributeKey )
-                    .FirstOrDefault();
+            lTitle.Text = noteAttribute.Name;
 
-                // If an attribute with the specified key does not exist for the context entity type, create one
-                if ( noteAttribute == null )
+            // Read any sub attributes of the note attribute
+            string attributeId = noteAttribute.Id.ToString();
+            subAttributes = attributeService.Queryable()
+                .Where( a =>
+                    a.Entity == "Rock.Core.AttributeValue" &&
+                    a.EntityQualifierColumn == "AttributeId" &&
+                    a.EntityQualifierValue == attributeId )
+                .ToList();
+
+            VerifySubAttribute( "Alert", "Alert", "Should note be flagged as an alert", Rock.SystemGuid.FieldType.BOOLEAN, attributeService );
+            VerifySubAttribute( "Title", "Title", "Title of note", Rock.SystemGuid.FieldType.TEXT, attributeService );
+            VerifySubAttribute( "Date", "Date", "Date note was created", Rock.SystemGuid.FieldType.DATE, attributeService );
+            VerifySubAttribute( "Type", "Type", "The type of note created", Rock.SystemGuid.FieldType.DEFINEDVALUE, attributeService );
+
+            phNotes.Controls.Clear();
+
+            var rootElement = new XElement( "notes" );
+        }
+
+        private void ShowNotes()
+        {
+            var service = new AttributeValueService();
+
+            foreach ( var note in service.Queryable()
+                .Where( v =>
+                    v.AttributeId == noteAttribute.Id &&
+                    v.EntityId == contextEntity.Id )
+                .OrderByDescending( v => v.Order ) ) 
+            {
+                if ( note.IsAuthorized( "View", CurrentPerson ) )
                 {
-                    noteAttribute = new Rock.Core.Attribute();
-                    noteAttribute.IsSystem = false;
-                    noteAttribute.Entity = contextTypeName;
-                    noteAttribute.EntityQualifierColumn = string.Empty;
-                    noteAttribute.EntityQualifierValue = string.Empty;
-                    noteAttribute.Key = attributeKey;
-                    noteAttribute.Name = attributeKey.SplitCase();
-                    noteAttribute.Category = string.Empty;
-                    noteAttribute.Description = attributeKey.SplitCase();
-                    noteAttribute.FieldTypeId = FieldType.Read( Rock.SystemGuid.FieldType.TEXT ).Id;
-                    noteAttribute.DefaultValue = string.Empty;
-                    noteAttribute.IsMultiValue = true;
-                    noteAttribute.IsRequired = false;
-                    attributeService.Add( noteAttribute, CurrentPersonId );
-                    attributeService.Save( noteAttribute, CurrentPersonId );
+                    AddNoteHtml( note );
                 }
+            }
+        }
 
-                lTitle.Text = noteAttribute.Name;
-
-                // Read any sub attributes of the note attribute
-                string attributeId = noteAttribute.Id.ToString();
-                var subAttributes = attributeService.Queryable()
-                    .Where( a =>
-                        a.Entity == "Rock.Core.AttributeValue" &&
-                        a.EntityQualifierColumn == "AttributeId" &&
-                        a.EntityQualifierValue == attributeId )
-                    .ToList();
-
-                // If an alert subattribute does not exist, create one
-                if ( !subAttributes.Exists( a => a.Key == "Alert" ) )
-                {
-                    var alertAttribute = new Rock.Core.Attribute();
-                    alertAttribute.IsSystem = false;
-                    alertAttribute.Entity = "Rock.Core.AttributeValue";
-                    alertAttribute.EntityQualifierColumn = "AttributeId";
-                    alertAttribute.EntityQualifierValue = noteAttribute.Id.ToString();
-                    alertAttribute.Key = "Alert";
-                    alertAttribute.Name = "Alert";
-                    alertAttribute.Category = string.Empty;
-                    alertAttribute.Description = "Should note be flagged as an alert";
-                    alertAttribute.FieldTypeId = FieldType.Read( Rock.SystemGuid.FieldType.BOOLEAN ).Id;
-                    alertAttribute.DefaultValue = string.Empty;
-                    alertAttribute.IsMultiValue = false;
-                    alertAttribute.IsRequired = false;
-                    attributeService.Add( alertAttribute, CurrentPersonId );
-                    attributeService.Save( alertAttribute, CurrentPersonId );
-                    subAttributes.Add( alertAttribute );
-                }
-
-                phNotes.Controls.Clear();
-
-                var rootElement = new XElement( "notes" );
-
-                foreach ( var note in attributeValueService.Queryable()
-                    .Where( v =>
-                        v.AttributeId == noteAttribute.Id &&
-                        v.EntityId == contextEntity.Id ) )
-                {
-                    if ( note.IsAuthorized( "View", CurrentPerson ) )
-                    {
-                        AddNoteHtml( note );
-                    }
-                }
+        private void VerifySubAttribute( string key, string name, string description, Guid fieldType, AttributeService service )
+        {
+            if ( !subAttributes.Exists( a => a.Key == key ) )
+            {
+                var attribute = new Rock.Core.Attribute();
+                attribute.IsSystem = false;
+                attribute.Entity = "Rock.Core.AttributeValue";
+                attribute.EntityQualifierColumn = "AttributeId";
+                attribute.EntityQualifierValue = noteAttribute.Id.ToString();
+                attribute.Key = key;
+                attribute.Name = name;
+                attribute.Category = string.Empty;
+                attribute.Description = description;
+                attribute.FieldTypeId = FieldType.Read( fieldType ).Id;
+                attribute.DefaultValue = string.Empty;
+                attribute.IsMultiValue = false;
+                attribute.IsRequired = false;
+                service.Add( attribute, CurrentPersonId );
+                service.Save( attribute, CurrentPersonId );
+                subAttributes.Add( attribute );
             }
         }
 
