@@ -190,6 +190,22 @@ namespace Rock.Data
         public DbSet<Rock.Core.MetricValue> MetricValues { get; set; }
 
         /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
+        /// <value>
+        /// The notes.
+        /// </value>
+        public DbSet<Rock.Core.Note> Notes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the note types.
+        /// </summary>
+        /// <value>
+        /// The note types.
+        /// </value>
+        public DbSet<Rock.Core.NoteType> NoteTypes { get; set; }
+
+        /// <summary>
         /// Gets or sets the Service Logs.
         /// </summary>
         /// <value>
@@ -419,6 +435,8 @@ namespace Rock.Data
             modelBuilder.Configurations.Add( new Rock.Core.FieldTypeConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.MetricConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.MetricValueConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Core.NoteConfiguration() );
+            modelBuilder.Configurations.Add( new Rock.Core.NoteTypeConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Core.ServiceLogConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Crm.CampusConfiguration() );
             modelBuilder.Configurations.Add( new Rock.Crm.EmailTemplateConfiguration() );

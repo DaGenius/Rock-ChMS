@@ -171,6 +171,14 @@
     <Compile Include="Core\CodeGenerated\MetricService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\CodeGenerated\NoteDto.cs" />
+    <Compile Include="Core\CodeGenerated\NoteService.cs" />
+    <Compile Include="Core\CodeGenerated\NoteTypeDto.cs" />
+    <Compile Include="Core\CodeGenerated\NoteTypeService.cs" />
+    <Compile Include="Core\NoteService.Partial.cs" />
+    <Compile Include="Core\NoteTypeService.Partial.cs" />
+    <Compile Include="Core\Note.cs" />
+    <Compile Include="Core\NoteType.cs" />
     <Compile Include="Core\EntityType.cs" />
     <Compile Include="Core\EntityTypeService.Partial.cs" />
     <Compile Include="Core\TaggedItemService.Partial.cs" />
@@ -564,9 +572,9 @@
     <Compile Include="Migrations\201210301603196_TagEntityType.Designer.cs">
       <DependentUpon>201210301603196_TagEntityType.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201210301651590_Notes.cs" />
-    <Compile Include="Migrations\201210301651590_Notes.Designer.cs">
-      <DependentUpon>201210301651590_Notes.cs</DependentUpon>
+    <Compile Include="Migrations\201210311914339_Notes.cs" />
+    <Compile Include="Migrations\201210311914339_Notes.Designer.cs">
+      <DependentUpon>201210311914339_Notes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\RockCSharpMigrationCodeGenerator.cs" />
@@ -994,8 +1002,8 @@
     <EmbeddedResource Include="Migrations\201210301603196_TagEntityType.resx">
       <DependentUpon>201210301603196_TagEntityType.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201210301651590_Notes.resx">
-      <DependentUpon>201210301651590_Notes.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201210311914339_Notes.resx">
+      <DependentUpon>201210311914339_Notes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
