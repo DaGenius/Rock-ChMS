@@ -8,13 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Rock;
 using Rock.Constants;
 using Rock.Crm;
 using Rock.Web.UI;
 using Rock.Web.UI.Controls;
 
-public partial class Groups : RockBlock
+public partial class Groups : GroupsRockBlock
 {
     #region Control Methods
 
@@ -32,6 +33,11 @@ public partial class Groups : RockBlock
             gGroups.Actions.IsAddEnabled = true;
             gGroups.Actions.AddClick += gGroups_Add;
             gGroups.GridRebind += gGroups_GridRebind;
+        }
+
+        if ( this.GroupTypeSpecific )
+        {
+            gGroups.Columns.OfType<BoundField>().FirstOrDefault( a => a.DataField.Equals( "GroupType.Name" ) ).Visible = false;
         }
     }
 
@@ -188,14 +194,21 @@ public partial class Groups : RockBlock
     {
         GroupService groupService = new GroupService();
         SortProperty sortProperty = gGroups.SortProperty;
+        var qry = groupService.Queryable();
+        if ( GroupTypeSpecific )
+        {
+            GroupTypeService gts = new GroupTypeService();
+            var gt = gts.Get( this.GroupTypeGuid.Value );
+            qry = qry.Where( a => a.GroupTypeId.Equals(gt.Id) );
+        }
 
         if ( sortProperty != null )
         {
-            gGroups.DataSource = groupService.Queryable().Sort( sortProperty ).ToList();
+            gGroups.DataSource = qry.Sort( sortProperty ).ToList();
         }
         else
         {
-            gGroups.DataSource = groupService.Queryable().OrderBy( p => p.Name ).ToList();
+            gGroups.DataSource = qry.OrderBy( p => p.Name ).ToList();
         }
 
         gGroups.DataBind();
@@ -211,20 +224,32 @@ public partial class Groups : RockBlock
         ddlGroupType.DataSource = groupTypes;
         ddlGroupType.DataBind();
 
-        int currentGroupId = int.Parse(hfGroupId.Value);
-
-        // TODO: Only include valid Parent choices (no circular references)
-        GroupService groupService = new GroupService();
-        List<Group> groups = groupService.Queryable().Where(g => g.Id != currentGroupId).OrderBy( a => a.Name).ToList();
-        groups.Insert( 0, new Group { Id = None.Id, Name = None.Text } );
-        ddlParentGroup.DataSource = groups;
-        ddlParentGroup.DataBind();
-
         CampusService campusService = new CampusService();
         List<Campus> campuses = campusService.Queryable().OrderBy( a => a.Name ).ToList();
         campuses.Insert( 0, new Campus { Id = None.Id, Name = None.Text } );
         ddlCampus.DataSource = campuses;
         ddlCampus.DataBind();
+
+        // ddlParentGroup gets loaded in ddlGroupType_SelectedIndexChanged
+    }
+
+    /// <summary>
+    /// Handles the SelectedIndexChanged event of the ddlGroupType control.
+    /// </summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="EventArgs" /> instance containing the event data.</param>
+    protected void ddlGroupType_SelectedIndexChanged( object sender, EventArgs e )
+    {
+        int currentGroupId = int.Parse( hfGroupId.Value );
+        int currentGroupTypeid = int.Parse( ddlGroupType.SelectedValue );
+        
+        // TODO: Verify Only include valid Parent choices (no circular references)
+        // Only include ParentGroups of the same GroupType, and parent can't be the current group
+        GroupService groupService = new GroupService();
+        List<Group> groups = groupService.Queryable().Where( g => (g.GroupTypeId.Equals(currentGroupTypeid)) && (!g.Id.Equals(currentGroupId)) ).OrderBy( a => a.Name ).ToList();
+        groups.Insert( 0, new Group { Id = None.Id, Name = None.Text } );
+        ddlParentGroup.DataSource = groups;
+        ddlParentGroup.DataBind();
     }
 
     /// <summary>
@@ -274,11 +299,24 @@ public partial class Groups : RockBlock
             hfGroupId.Value = 0.ToString();
             tbName.Text = string.Empty;
             tbDescription.Text = string.Empty;
-            ddlGroupType.SelectedValue = null;
+            if ( GroupTypeSpecific )
+            {
+                GroupTypeService gts = new GroupTypeService();
+                var gt = gts.Get( this.GroupTypeGuid.Value );
+                ddlGroupType.SelectedValue = gt.Id.ToString();
+            }
+            else
+            {
+                ddlGroupType.SelectedValue = null;
+            }
             ddlParentGroup.SelectedValue = None.IdValue;
             ddlCampus.SelectedValue = None.IdValue;
             cbIsSecurityRole.Checked = false;
         }
+
+        ddlGroupType_SelectedIndexChanged( null, null );
+
+        ddlGroupType.Visible = !this.GroupTypeSpecific;
 
         ddlGroupType.Enabled = !readOnly;
         ddlParentGroup.Enabled = !readOnly;
@@ -291,4 +329,5 @@ public partial class Groups : RockBlock
     }
 
     #endregion
+    
 }

@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Groups.ascx.cs" Inherits="Groups" %>
 
-<asp:UpdatePanel ID="upGroups" runat="server" >
+<asp:UpdatePanel ID="upGroups" runat="server">
     <ContentTemplate>
         <asp:Panel ID="pnlList" runat="server">
             <Rock:Grid ID="gGroups" runat="server" AllowSorting="true">
@@ -24,21 +24,22 @@
 
             <fieldset>
                 <legend>
-                    <i id="iconIsSystem" runat="server" class="icon-eye-open" ></i>
+                    <i id="iconIsSystem" runat="server" class="icon-eye-open"></i>
                     <asp:Literal ID="lActionTitle" runat="server" />
                 </legend>
                 <div class="row-fluid">
                     <div class="span6">
                         <Rock:DataTextBox ID="tbName" runat="server" SourceTypeName="Rock.Crm.Group, Rock" PropertyName="Name" />
                         <Rock:DataTextBox ID="tbDescription" runat="server" SourceTypeName="Rock.Crm.Group, Rock" PropertyName="Description" TextMode="MultiLine" Rows="4" />
-                        <Rock:DataDropDownList ID="ddlGroupType" runat="server" DataTextField="Name" DataValueField="Id" SourceTypeName="Rock.Crm.GroupType, Rock" PropertyName="Name" LabelText="Group Type" />
+                        <Rock:DataDropDownList ID="ddlCampus" runat="server" DataTextField="Name" DataValueField="Id" SourceTypeName="Rock.Crm.Campus, Rock" PropertyName="Name" LabelText="Campus" />
+
                     </div>
                     <div class="span6">
+                        <Rock:DataDropDownList ID="ddlGroupType" runat="server" DataTextField="Name" DataValueField="Id" SourceTypeName="Rock.Crm.GroupType, Rock"
+                            PropertyName="Name" LabelText="Group Type" AutoPostBack="true" OnSelectedIndexChanged="ddlGroupType_SelectedIndexChanged" />
                         <Rock:DataDropDownList ID="ddlParentGroup" runat="server" DataTextField="Name" DataValueField="Id" SourceTypeName="Rock.Crm.Group, Rock" PropertyName="Name" LabelText="Parent Group" />
                         <Rock:LabeledCheckBox ID="cbIsSecurityRole" runat="server" LabelText="Security Role" />
-                        <Rock:DataDropDownList ID="ddlCampus" runat="server" DataTextField="Name" DataValueField="Id" SourceTypeName="Rock.Crm.Campus, Rock" PropertyName="Name" LabelText="Campus" />
                     </div>
-                </div>
             </fieldset>
 
             <div class="actions">
